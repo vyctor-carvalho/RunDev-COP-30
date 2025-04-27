@@ -1,6 +1,7 @@
 package com.api.waste.waste_residue.controllers;
 
 import com.api.waste.waste_residue.DTO.JwtResponse;
+import com.api.waste.waste_residue.DTO.LoginRequest;
 import com.api.waste.waste_residue.models.Student;
 import com.api.waste.waste_residue.repository.StudentRepository;
 import com.api.waste.waste_residue.security.JwtTokenProvider;
@@ -46,16 +47,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public JwtResponse login(@RequestBody Student student) {
-        Optional<Student> existingStudent = studentRepository.findByRegistration(student.getRegistration());
-        if (existingStudent.isPresent() && passwordEncoder.matches(student.getPassword(), existingStudent.get().getPassword())) {
-            // Obter as roles do estudante
+    public JwtResponse login(@RequestBody LoginRequest loginRequest) {
+        Optional<Student> existingStudent = studentRepository.findByRegistration(loginRequest.getRegistration());
+
+        if (existingStudent.isEmpty()) {
+            throw new RuntimeException("Invalid registration or password!");
+        }
+
+        System.out.println("Senha enviada: " + loginRequest.getPassword());
+        System.out.println("Senha no banco: " + existingStudent.get().getPassword());
+
+        // A comparação correta de hashes já está sendo feita no matches()
+        if (passwordEncoder.matches(loginRequest.getPassword(), existingStudent.get().getPassword())) {
             List<String> roles = List.of(existingStudent.get().getRole());
-
-            // Gerando o token JWT com roles
-            String token = jwtTokenProvider.generateToken(student.getRegistration().toString(), roles);
-
-            return new JwtResponse(token);  // Retorna o objeto com o token
+            String token = jwtTokenProvider.generateToken(existingStudent.get().getRegistration(), roles);
+            return new JwtResponse(token);
         } else {
             throw new RuntimeException("Invalid registration or password!");
         }

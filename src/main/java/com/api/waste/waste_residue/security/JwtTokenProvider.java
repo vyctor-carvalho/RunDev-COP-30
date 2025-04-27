@@ -2,6 +2,7 @@ package com.api.waste.waste_residue.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -12,26 +13,26 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
-    private final String SECRET_KEY = "P4t$a5d3G4t05"; // Chave secreta, altere para algo mais seguro
+    private static final String SECRET_KEY = "Zm9vYmFyYmF6cXV4eGN2Ym56dmNuamJ6eG5iam5jenl2Ym5qdm54Ymp2bm5jenZj";
+
 
     // Método para gerar o token
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(int username, List<String> roles) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 86400000); // 1 dia de expiração
 
-        // Convertendo as roles em GrantedAuthority
-        List<SimpleGrantedAuthority> authorities = roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        System.out.println(roles);
+        System.out.println(username);
 
         return Jwts.builder()
-                .setSubject(username)
-                .claim("roles", authorities) // Incluindo as roles como autoridades
+                .setSubject(String.valueOf(username))
+                .claim("roles", roles) // Agora passando a lista de String diretamente
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS512)
                 .compact();
     }
+
 
     // Método para extrair o nome de usuário do token
     public String getUsernameFromToken(String token) {
