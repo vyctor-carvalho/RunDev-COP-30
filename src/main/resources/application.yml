@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/waste_management
     username: root
-    password: "sua senha"
+    password: "Vk 07081415"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

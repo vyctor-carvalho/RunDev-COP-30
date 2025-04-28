@@ -19,7 +19,6 @@ public class UnitController {
 
     // Qualquer estudante ou admin pode visualizar
     @GetMapping("/getunit")
-    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     public List<Unit> getAllUnits() {
         return unitRepository.findAll();
     }

@@ -24,6 +24,7 @@ public class Student {
     @Column(name = "class")
     private String className;
 
+
     @ManyToOne
     @JoinColumn(name = "unit_id_unit")
     private Unit unit;

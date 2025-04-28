@@ -1,6 +1,8 @@
 package com.api.waste.waste_residue.controllers;
 
 import com.api.waste.waste_residue.models.WasteResidue;
+import com.api.waste.waste_residue.repository.StudentRepository;
+import com.api.waste.waste_residue.repository.TypeWasteResidueRepository;
 import com.api.waste.waste_residue.repository.WasteResidueRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,12 @@ public class WasteResidueController {
     @Autowired
     private WasteResidueRepository wasteResidueRepository;
 
+    @Autowired
+    private TypeWasteResidueRepository typeWasteResidueRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
     // Qualquer estudante ou admin pode visualizar os resíduos
     @GetMapping
     @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
@@ -26,7 +34,7 @@ public class WasteResidueController {
 
     // Apenas estudante pode criar registro de resíduo
     @PostMapping
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     public WasteResidue createResidue(@RequestBody @Valid WasteResidue wasteResidue) {
         return wasteResidueRepository.save(wasteResidue);
     }

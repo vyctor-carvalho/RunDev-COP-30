@@ -63,9 +63,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Desativa CSRF para APIs REST
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Permite o cadastro e login sem autenticação
+                        .requestMatchers("/resisted/units/getunit").permitAll()
                         .requestMatchers("/resisted/**").hasAnyRole("ADMIN", "STUDENT") // Requer login para acessar /resisted
-                        .requestMatchers("/protected/**").hasRole("ADMIN") // Requer role "ADMIN" para acessar /protected
-                        .requestMatchers("/resisted/units/getunit").permitAll() // Exemplo de rota pública
+                        .requestMatchers("/protected/**").hasRole("ADMIN") // Requer role "ADMIN" para acessar /protecte
                         .anyRequest().authenticated() // Exige autenticação para qualquer outra rota
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Adiciona o filtro JWT
