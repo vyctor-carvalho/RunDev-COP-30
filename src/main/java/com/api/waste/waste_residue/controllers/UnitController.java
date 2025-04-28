@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/units")
+@RequestMapping("/resisted/units")
+@CrossOrigin
 public class UnitController {
 
     @Autowired
     private UnitRepository unitRepository;
 
     // Qualquer estudante ou admin pode visualizar
-    @GetMapping
+    @GetMapping("/getunit")
     @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     public List<Unit> getAllUnits() {
         return unitRepository.findAll();

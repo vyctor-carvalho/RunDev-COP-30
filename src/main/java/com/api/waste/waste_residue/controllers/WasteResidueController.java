@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/waste-residues")
+@RequestMapping("/resisted/waste-residues")
+@CrossOrigin
 public class WasteResidueController {
 
     @Autowired

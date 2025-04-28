@@ -29,8 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = getJwtFromRequest(request);
 
+        System.out.println("Token: " + token);
+
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsernameFromToken(token);
+            String uri = request.getRequestURI();
+            if (uri.startsWith("/resisted/units/getunit")) {
+                // Se a rota for pública, não faz nada
+                filterChain.doFilter(request, response);
+                return;
+            }
             List<SimpleGrantedAuthority> authorities = jwtTokenProvider.getRolesFromToken(token).stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // Adicionando o prefixo "ROLE_" para cada role
                     .collect(Collectors.toList());
@@ -39,14 +47,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
 
+            // Define a autenticação no contexto de segurança
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
             // Logar a falha na validação de token
-            logger.warn("JWT token is invalid or expired.");
+            System.out.println("JWT token is invalid or expired.");
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");

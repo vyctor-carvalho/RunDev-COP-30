@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/students")
+@RequestMapping("/resisted/students")
+@CrossOrigin
 public class StudentController {
 
     @Autowired

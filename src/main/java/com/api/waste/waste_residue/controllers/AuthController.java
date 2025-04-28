@@ -7,16 +7,14 @@ import com.api.waste.waste_residue.repository.StudentRepository;
 import com.api.waste.waste_residue.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthController {
 
     @Autowired
@@ -58,7 +56,7 @@ public class AuthController {
         System.out.println("Senha no banco: " + existingStudent.get().getPassword());
 
         // A comparação correta de hashes já está sendo feita no matches()
-        if (passwordEncoder.matches(loginRequest.getPassword(), existingStudent.get().getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), existingStudent.get().getPassword())) {
             List<String> roles = List.of(existingStudent.get().getRole());
             String token = jwtTokenProvider.generateToken(existingStudent.get().getRegistration(), roles);
             return new JwtResponse(token);
